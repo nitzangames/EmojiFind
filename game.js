@@ -1,17 +1,53 @@
-(function() {
-  var canvas = document.getElementById('game');
-  var ctx = canvas.getContext('2d');
+var canvas, ctx;
+var state = {
+  mode: 'loading',          // 'loading' | 'inGame' | 'found' | 'settings'
+  level: 1,
+  levelData: null,
+  pools: null,
+  allEmojis: null,
+};
 
-  function drawFrame() {
-    ctx.fillStyle = COL_BG;
-    ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
+async function bootstrap() {
+  canvas = document.getElementById('game');
+  ctx = canvas.getContext('2d');
 
-    ctx.fillStyle = 'rgba(255,255,255,0.5)';
-    ctx.textAlign = 'center';
-    ctx.font = '21px sans-serif';
-    ctx.fillText(VERSION, CANVAS_W / 2, CANVAS_H - 24);
+  await loadSave();
+  state.level = getSave().currentLevel;
 
-    requestAnimationFrame(drawFrame);
-  }
-  requestAnimationFrame(drawFrame);
-})();
+  const pairsRes = await fetch('assets/pairs.json');
+  state.pools = await pairsRes.json();
+  const allRes = await fetch('assets/all-emojis.json');
+  state.allEmojis = await allRes.json();
+
+  attachInput(canvas);
+  await startLevel(state.level);
+
+  requestAnimationFrame(frame);
+}
+
+async function startLevel(level) {
+  state.mode = 'loading';
+  state.level = level;
+  const data = buildLevel({
+    level,
+    pools: state.pools,
+    allEmojis: state.allEmojis,
+    indexSeed: (Date.now() % 100000) + level,
+  });
+  data.startedAt = performance.now();
+  // Preload images for this level
+  const needed = new Set();
+  needed.add(data.targetCodepoint);
+  if (data.fillerCodepoint) needed.add(data.fillerCodepoint);
+  for (const t of data.tiles) needed.add(t.codepoint);
+  await loadImages(Array.from(needed));
+  state.levelData = data;
+  state.mode = 'inGame';
+}
+
+function frame() {
+  drawFrame(state);
+  requestAnimationFrame(frame);
+}
+
+window.addEventListener('load', bootstrap);
