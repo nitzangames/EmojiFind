@@ -85,7 +85,7 @@ Steps:
 5. Build three arrays:
    - `easy` — pair objects whose canonical id is in `emojiGroupEasyList`
    - `medium` — pair objects whose canonical id is in `emojiGroupMediumList`
-   - `hard` — every remaining pair
+   - `hard` — every canonical pair (NOT the complement of easy/medium). Mirrors Unity's behaviour: for levels 50+ Unity rolls `Random.Range(0, emojiGroups.Length)` against the full canonical list before any easy/medium override.
 6. Write `assets/pairs.json`:
    ```json
    { "easy": [...], "medium": [...], "hard": [...] }

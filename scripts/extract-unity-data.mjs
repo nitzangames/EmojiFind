@@ -12,9 +12,9 @@ export function partitionPairs(canonical, easyIds, mediumIds, pairsByName) {
     const name = canonical[i];
     const pair = pairsByName[name];
     if (!pair) continue;  // skip missing
-    if (easySet.has(i))        easy.push(pair);
-    else if (mediumSet.has(i)) medium.push(pair);
-    else                       hard.push(pair);
+    if (easySet.has(i))   easy.push(pair);
+    if (mediumSet.has(i)) medium.push(pair);
+    hard.push(pair);  // hard always includes every pair (mirrors Unity)
   }
   return { easy, medium, hard };
 }

@@ -361,7 +361,8 @@ test('partitionPairs splits pairs by easy/medium/hard lists', () => {
   const canonical = ['pa', 'pb', 'pc', 'pd', 'pe'];
   const easyIds = [0, 2];        // pa, pc
   const mediumIds = [1];          // pb
-  // remaining ids 3, 4 => pd, pe go to hard
+  // hard contains every canonical pair (mirrors Unity: levels 50+ roll
+  // against the full emojiGroups list, not the complement of easy/medium).
 
   const pairsByName = {
     pa: { a: '1f600', b: '1f601', diff: 100, first: false },
@@ -375,7 +376,7 @@ test('partitionPairs splits pairs by easy/medium/hard lists', () => {
 
   assert.deepEqual(out.easy.map(p => p.a), ['1f600', '1f604']);
   assert.deepEqual(out.medium.map(p => p.a), ['1f602']);
-  assert.deepEqual(out.hard.map(p => p.a), ['1f606', '1f608']);
+  assert.deepEqual(out.hard.map(p => p.a), ['1f600', '1f602', '1f604', '1f606', '1f608']);
 });
 
 test('partitionPairs skips canonical entries missing from pairsByName', () => {
@@ -385,6 +386,7 @@ test('partitionPairs skips canonical entries missing from pairsByName', () => {
     pc: { a: 'C', b: 'D', diff: 1, first: false },
   });
   assert.equal(out.easy.length, 2);  // pa + pc, missing skipped
+  assert.equal(out.hard.length, 2);  // only the two non-missing pairs land in hard
 });
 ```
 
@@ -412,9 +414,9 @@ export function partitionPairs(canonical, easyIds, mediumIds, pairsByName) {
     const name = canonical[i];
     const pair = pairsByName[name];
     if (!pair) continue;  // skip missing
-    if (easySet.has(i))        easy.push(pair);
-    else if (mediumSet.has(i)) medium.push(pair);
-    else                       hard.push(pair);
+    if (easySet.has(i))   easy.push(pair);
+    if (mediumSet.has(i)) medium.push(pair);
+    hard.push(pair);  // hard always includes every pair (mirrors Unity)
   }
   return { easy, medium, hard };
 }
