@@ -2,7 +2,7 @@
 // state shape: { mode, level, levelData, save, hudButtons }.
 
 const HINT_BTN = { x: CANVAS_W - 80 - 200, y: 50, w: 200, h: 100 };
-const GEAR_BTN = { x: CANVAS_W - 80, y: 20, w: 60, h: 60 };
+const GEAR_BTN = { x: 80, y: 50, w: 200, h: 100 };
 const NEXT_BTN = { x: (CANVAS_W - 600) / 2, y: 1700, w: 600, h: 140 };
 const PREV_BTN = { x: 80, y: 1700, w: 140, h: 140 };
 
@@ -22,15 +22,19 @@ function drawFrame(state) {
 }
 
 function drawHud(state) {
-  // Star count
+  // Settings pill (always visible) — left-side mirror of Hint
+  drawPill(GEAR_BTN, COL_HINT, '⚙');
+
+  // Star count — right of Settings
+  const starsX = GEAR_BTN.x + GEAR_BTN.w + 40;
   ctx.fillStyle = '#ffd84a';
   ctx.font = '60px sans-serif';
   ctx.textAlign = 'left';
   ctx.textBaseline = 'middle';
-  ctx.fillText('★', 60, 100);
+  ctx.fillText('★', starsX, 100);
   ctx.fillStyle = '#ffffff';
   ctx.font = '48px sans-serif';
-  ctx.fillText(String(totalStars()), 120, 100);
+  ctx.fillText(String(totalStars()), starsX + 60, 100);
 
   // Title
   ctx.textAlign = 'center';
@@ -45,13 +49,6 @@ function drawHud(state) {
   if (state.mode === 'inGame' && state.levelData && state.levelData.hintsUsed < 2) {
     drawPill(HINT_BTN, COL_HINT, 'Hint');
   }
-
-  // Settings gear
-  ctx.fillStyle = '#ffffff';
-  ctx.font = '48px sans-serif';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText('⚙', GEAR_BTN.x + GEAR_BTN.w / 2, GEAR_BTN.y + GEAR_BTN.h / 2);
 }
 
 function drawGrid(levelData) {
