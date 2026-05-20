@@ -22,7 +22,21 @@ async function bootstrap() {
   attachInput(canvas);
   await startLevel(state.level);
 
-  requestAnimationFrame(frame);
+  if (window.PlaySDK && window.PlaySDK.screenshotMode) {
+    // Jump to a visually clean level for App Store captures.
+    await startLevel(8);
+  }
+
+  let rafId = 0;
+  if (window.PlaySDK) {
+    if (typeof window.PlaySDK.onPause === 'function') {
+      window.PlaySDK.onPause(() => { if (rafId) cancelAnimationFrame(rafId); rafId = 0; });
+    }
+    if (typeof window.PlaySDK.onResume === 'function') {
+      window.PlaySDK.onResume(() => { if (!rafId) rafId = requestAnimationFrame(frame); });
+    }
+  }
+  rafId = requestAnimationFrame(frame);
 }
 
 async function startLevel(level) {
