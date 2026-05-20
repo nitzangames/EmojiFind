@@ -73,10 +73,14 @@ const anim = {
     if (anim.starStartedAt < 0) return;
     const t = performance.now() - anim.starStartedAt;
     for (let i = 0; i < 3; i++) {
+      const prev = anim.stars[i];
       const local = t - i * STAR_POP_STAGGER;
       if (local <= 0) anim.stars[i] = 0;
       else if (local >= STAR_POP_DURATION) anim.stars[i] = 1;
       else anim.stars[i] = local / STAR_POP_DURATION;
+      if (prev === 0 && anim.stars[i] > 0 && i < (anim.starsEarned || 0)) {
+        tryHaptic('light');
+      }
     }
   },
 

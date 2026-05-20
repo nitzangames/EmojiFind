@@ -3,6 +3,14 @@
 let canvasRect = null;
 let canvasScaleX = 1, canvasScaleY = 1;
 
+function tryHaptic(kind) {
+  const s = getSave();
+  if (!s || !s.settings.haptics) return;
+  if (window.PlaySDK && typeof window.PlaySDK.haptic === 'function') {
+    try { window.PlaySDK.haptic(kind); } catch (_) {}
+  }
+}
+
 function refreshRect() {
   canvasRect = canvas.getBoundingClientRect();
   canvasScaleX = canvas.width / canvasRect.width;
@@ -55,6 +63,7 @@ function onGridTap(idx) {
     onFound();
   } else {
     state.levelData.tiles[idx].shakeT = 1;
+    tryHaptic('warning');
   }
 }
 
@@ -75,6 +84,7 @@ function onFound() {
   }
   anim.startStarSequence(3 - lvl.hintsUsed);
   anim.spawnConfetti(CANVAS_W / 2, CANVAS_H / 2);
+  tryHaptic('success');
 }
 
 function onNext() { startLevel(state.levelData.level + 1); }
