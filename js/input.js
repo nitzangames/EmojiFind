@@ -54,7 +54,7 @@ function onGridTap(idx) {
   if (idx === state.levelData.targetIndex) {
     onFound();
   } else {
-    // Will get shake + haptic in Task 14.
+    state.levelData.tiles[idx].shakeT = 1;
   }
 }
 
@@ -67,6 +67,14 @@ function onFound() {
   save.maxLevel = Math.max(save.maxLevel, lvl.level + 1);
   save.currentLevel = lvl.level + 1;
   writeSave();
+
+  // Target pop + non-target dim + stars + confetti
+  lvl.tiles[lvl.targetIndex].popT = 1;
+  for (let i = 0; i < lvl.tiles.length; i++) {
+    if (i !== lvl.targetIndex) lvl.tiles[i].dimTarget = 0.25;
+  }
+  anim.startStarSequence(3 - lvl.hintsUsed);
+  anim.spawnConfetti(CANVAS_W / 2, CANVAS_H / 2);
 }
 
 function onNext() { startLevel(state.levelData.level + 1); }

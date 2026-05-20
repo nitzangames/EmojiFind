@@ -45,7 +45,12 @@ async function startLevel(level) {
   state.mode = 'inGame';
 }
 
-function frame() {
+var lastFrameTs = 0;
+function frame(ts) {
+  const dt = lastFrameTs === 0 ? 16 : Math.min(50, ts - lastFrameTs);
+  lastFrameTs = ts;
+  anim.update(dt, state.levelData);
+  anim.updateStars();
   drawFrame(state);
   requestAnimationFrame(frame);
 }

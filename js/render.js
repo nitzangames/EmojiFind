@@ -62,11 +62,19 @@ function drawGrid(levelData) {
     const x = GRID_X + col * TILE_W;
     const y = GRID_Y + row * TILE_H;
     const img = getImageNow(t.codepoint);
-    if (img) {
-      ctx.globalAlpha = t.alpha * t.dimT;
-      ctx.drawImage(img, x, y, TILE_W, TILE_H);
-      ctx.globalAlpha = 1;
+    if (!img) continue;
+
+    const shakeOffset = t.shakeT > 0 ? Math.sin(t.shakeT * 30) * 12 : 0;
+    let scale = 1;
+    if (t.popT > 0) {
+      // 0..1: 0->0.5 grows to 1.3, 0.5->1 shrinks to 1.0
+      scale = t.popT > 0.5 ? 1 + (1 - t.popT) * 0.6 : 1 + t.popT * 0.6;
     }
+    const drawX = x + shakeOffset + (TILE_W - TILE_W * scale) / 2;
+    const drawY = y + (TILE_H - TILE_H * scale) / 2;
+    ctx.globalAlpha = t.alpha * t.dimT;
+    ctx.drawImage(img, drawX, drawY, TILE_W * scale, TILE_H * scale);
+    ctx.globalAlpha = 1;
   }
 }
 
@@ -89,17 +97,27 @@ function drawFoundOverlay(levelData) {
   ctx.textBaseline = 'middle';
   ctx.fillText('Emoji found!', CANVAS_W / 2, 280);
 
-  // Stars (no animation yet — fixed positions)
   const starsEarned = 3 - levelData.hintsUsed;
   const starSize = 120, gap = 40;
   const totalW = 3 * starSize + 2 * gap;
   const startX = (CANVAS_W - totalW) / 2;
-  ctx.textBaseline = 'middle';
   ctx.font = '120px sans-serif';
+  ctx.textBaseline = 'middle';
   for (let s = 0; s < 3; s++) {
+    const p = anim.stars[s];          // 0..1
+    if (p <= 0) continue;             // not visible yet
+    // bounce: scale 0 -> 1.2 -> 1
+    const scale = p < 0.5 ? p * 2.4 : 2.4 - p * 1.2;  // 0->1.2 then 1.2->1
+    const cx = startX + s * (starSize + gap) + starSize / 2;
     ctx.fillStyle = s < starsEarned ? COL_STAR_ON : COL_STAR_OFF;
-    ctx.fillText('★', startX + s * (starSize + gap) + starSize / 2, 460);
+    ctx.save();
+    ctx.translate(cx, 460);
+    ctx.scale(scale, scale);
+    ctx.fillText('★', 0, 0);
+    ctx.restore();
   }
+
+  anim.drawConfetti();
 
   drawPill(NEXT_BTN, COL_NEXT, 'Next');
   if (levelData.level > 1) drawPill(PREV_BTN, COL_NEXT, '←');
