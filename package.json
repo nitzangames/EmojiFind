@@ -1,0 +1,10 @@
+{
+  "name": "emojifind-build",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "extract": "node scripts/extract-unity-data.mjs --unity=/Users/nitzanwilnai/Programming/Unity/EmojiFind",
+    "test": "node --test test/"
+  }
+}
