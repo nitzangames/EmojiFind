@@ -1,4 +1,4 @@
-const VERSION = 'v0.1.1';
+const VERSION = 'v0.1.2';
 
 // Board
 const GRID_W = 9;
