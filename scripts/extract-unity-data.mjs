@@ -61,7 +61,20 @@ async function main() {
   await fs.writeFile(path.join(outDir, 'pairs.json'), JSON.stringify(partitioned));
   console.log('Wrote assets/pairs.json');
 
-  // PNG copy + all-emojis.json happen in the next task.
+  console.log('Copying Twemoji PNGs …');
+  const srcEmojiDir = path.join(unityRoot, 'Assets/Resources/tweetemoji-72x72');
+  const dstEmojiDir = path.join(outDir, 'emoji');
+  const allCodepoints = [];
+  for (const guid of Object.keys(guidToCodepoint)) {
+    const codepoint = guidToCodepoint[guid];
+    const src = path.join(srcEmojiDir, `${codepoint}.png`);
+    const dst = path.join(dstEmojiDir, `${codepoint}.png`);
+    await fs.copyFile(src, dst);
+    allCodepoints.push(codepoint);
+  }
+  allCodepoints.sort();
+  await fs.writeFile(path.join(outDir, 'all-emojis.json'), JSON.stringify(allCodepoints));
+  console.log(`  copied ${allCodepoints.length} PNGs; wrote assets/all-emojis.json`);
 }
 
 async function buildGuidToCodepointMap(unityRoot) {
