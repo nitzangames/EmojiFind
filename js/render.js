@@ -2,7 +2,7 @@
 // state shape: { mode, level, levelData, save, hudButtons }.
 
 const HINT_BTN = { x: CANVAS_W - 80 - 200, y: 50, w: 200, h: 100 };
-const GEAR_BTN = { x: 80, y: 50, w: 200, h: 100 };
+const GEAR_BTN = { x: 80, y: 50, w: 100, h: 100 };
 const NEXT_BTN = { x: (CANVAS_W - 600) / 2, y: 1700, w: 600, h: 140 };
 const PREV_BTN = { x: 80, y: 1700, w: 140, h: 140 };
 
@@ -23,27 +23,30 @@ function drawFrame(state) {
 
 function drawHud(state) {
   // Settings pill (always visible) — left-side mirror of Hint
-  drawPill(GEAR_BTN, COL_HINT, '⚙');
+  drawPill(GEAR_BTN, COL_HINT, '⚙', '96px sans-serif');
 
-  // Star count — right of Settings
-  const starsX = GEAR_BTN.x + GEAR_BTN.w + 40;
-  ctx.fillStyle = '#ffd84a';
-  ctx.font = '60px sans-serif';
-  ctx.textAlign = 'left';
-  ctx.textBaseline = 'middle';
-  ctx.fillText('★', starsX, 100);
-  ctx.fillStyle = '#ffffff';
-  ctx.font = '48px sans-serif';
-  ctx.fillText(String(totalStars()), starsX + 60, 100);
-
-  // Title
+  // Title (centered)
   ctx.textAlign = 'center';
   ctx.font = '72px sans-serif';
+  ctx.textBaseline = 'middle';
   ctx.fillStyle = '#ffffff';
   const title = state.levelData && state.levelData.isSpecial
     ? `Special ${Math.floor(state.levelData.level / SPECIAL_EVERY_X)}`
     : `Level ${state.level}`;
-  ctx.fillText(title, CANVAS_W / 2, 100);
+  ctx.fillText(title, CANVAS_W / 2, 80);
+
+  // Star count — centered under the title
+  ctx.font = '40px sans-serif';
+  ctx.textAlign = 'left';
+  const starsText = String(totalStars());
+  const starGlyph = '★ ';
+  const glyphW = ctx.measureText(starGlyph).width;
+  const numW = ctx.measureText(starsText).width;
+  const starsStartX = CANVAS_W / 2 - (glyphW + numW) / 2;
+  ctx.fillStyle = '#ffd84a';
+  ctx.fillText(starGlyph, starsStartX, 152);
+  ctx.fillStyle = '#ffffff';
+  ctx.fillText(starsText, starsStartX + glyphW, 152);
 
   // Hint button (only inGame and hintsUsed < 2)
   if (state.mode === 'inGame' && state.levelData && state.levelData.hintsUsed < 2) {
@@ -120,7 +123,7 @@ function drawFoundOverlay(levelData) {
   if (levelData.level > 1) drawPill(PREV_BTN, COL_NEXT, '←');
 }
 
-function drawPill(r, color, text) {
+function drawPill(r, color, text, font) {
   const radius = r.h / 2;
   ctx.fillStyle = color;
   ctx.beginPath();
@@ -132,7 +135,7 @@ function drawPill(r, color, text) {
   ctx.closePath();
   ctx.fill();
   ctx.fillStyle = '#ffffff';
-  ctx.font = '48px sans-serif';
+  ctx.font = font || '48px sans-serif';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.fillText(text, r.x + r.w / 2, r.y + r.h / 2);
