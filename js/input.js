@@ -36,7 +36,7 @@ function onPointerDown(e) {
   if (state.mode === 'settings') return;  // settings modal swallows input
 
   if (hit(RENDER_RECTS.GEAR_BTN, x, y)) {
-    openSettings();
+    if (window.openSettings) window.openSettings();
     return;
   }
   if (state.mode === 'found') {
@@ -94,6 +94,3 @@ function onHint() {
   applyHint(lvl.hintsUsed + 1, lvl.targetIndex, lvl.tiles);
   lvl.hintsUsed++;
 }
-
-// Stub — full settings modal arrives in Task 18.
-function openSettings() { /* no-op for now */ }

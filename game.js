@@ -20,6 +20,7 @@ async function bootstrap() {
   state.allEmojis = await allRes.json();
 
   attachInput(canvas);
+  initSettings();
   await startLevel(state.level);
 
   if (window.PlaySDK && window.PlaySDK.screenshotMode) {

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <meta name="game-version" content="v0.1.11">
+  <meta name="game-version" content="v0.1.12">
   <title>Emoji Find</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -23,10 +23,63 @@
       -webkit-user-select: none;
       -webkit-tap-highlight-color: transparent;
     }
+    #settings-backdrop {
+      position: absolute; inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 10;
+    }
+    #settings-modal {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      z-index: 11;
+    }
+    #settings-modal .card {
+      background: #34495e; color: white;
+      width: 80%; max-width: 800px;
+      padding: 40px; border-radius: 24px;
+      position: relative;
+      font-size: 24px;
+    }
+    #settings-modal h2 { font-size: 44px; margin-bottom: 24px; }
+    #settings-modal .row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 12px 0; font-size: 32px;
+    }
+    #settings-modal input[type="checkbox"] { width: 32px; height: 32px; }
+    #settings-close {
+      position: absolute; top: 16px; right: 16px;
+      background: transparent; color: white; border: none;
+      font-size: 32px; cursor: pointer;
+    }
+    #settings-modal button {
+      background: #5badee; color: white; border: none;
+      padding: 12px 24px; border-radius: 12px; font-size: 24px;
+      cursor: pointer;
+    }
+    #settings-modal .reset { margin-top: 24px; }
+    #settings-modal #settings-reset-confirm { margin-top: 16px; }
+    #settings-modal #settings-reset-yes { background: #e74c3c; margin-right: 8px; }
   </style>
 </head>
 <body>
   <canvas id="game" width="1080" height="1920"></canvas>
+  <div id="settings-backdrop" hidden></div>
+  <div id="settings-modal" hidden>
+    <div class="card">
+      <button id="settings-close" aria-label="Close">✕</button>
+      <h2>Settings</h2>
+      <label class="row"><span>Sound</span><input type="checkbox" id="settings-sound"></label>
+      <label class="row"><span>Haptics</span><input type="checkbox" id="settings-haptics"></label>
+      <div class="reset">
+        <button id="settings-reset">Reset progress</button>
+        <div id="settings-reset-confirm" hidden>
+          <p>Reset all progress?</p>
+          <button id="settings-reset-yes">Yes, reset</button>
+          <button id="settings-reset-no">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
   <script src="https://nitzan.games/play-sdk.js"></script>
   <script src="js/constants.js?v=1"></script>
   <script src="js/rng.js?v=1"></script>
@@ -38,6 +91,7 @@
   <script src="js/anim.js?v=1"></script>
   <script src="js/render.js?v=1"></script>
   <script src="js/input.js?v=1"></script>
+  <script src="js/ui.js?v=1"></script>
   <script src="game.js?v=1"></script>
 </body>
 </html>
