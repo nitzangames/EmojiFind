@@ -4,7 +4,6 @@ var state = {
   level: 1,
   levelData: null,
   pools: null,
-  allEmojis: null,
 };
 
 async function bootstrap() {
@@ -16,8 +15,6 @@ async function bootstrap() {
 
   const pairsRes = await fetch('assets/pairs.json');
   state.pools = await pairsRes.json();
-  const allRes = await fetch('assets/all-emojis.json');
-  state.allEmojis = await allRes.json();
 
   attachInput(canvas);
   initSettings();
@@ -46,16 +43,10 @@ async function startLevel(level) {
   const data = buildLevel({
     level,
     pools: state.pools,
-    allEmojis: state.allEmojis,
     indexSeed: (Date.now() % 100000) + level,
   });
   data.startedAt = performance.now();
-  // Preload images for this level
-  const needed = new Set();
-  needed.add(data.targetCodepoint);
-  if (data.fillerCodepoint) needed.add(data.fillerCodepoint);
-  for (const t of data.tiles) needed.add(t.codepoint);
-  await loadImages(Array.from(needed));
+  await loadImages([data.targetCodepoint, data.fillerCodepoint]);
   state.levelData = data;
   state.mode = 'inGame';
 }

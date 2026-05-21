@@ -5,10 +5,6 @@
 //   - level seeded by (level + 512) to mirror Unity's Random.InitState
 // `pools` shape: { easy: [], medium: [], hard: [] }, each entry { a, b, diff, first }.
 
-function isSpecialLevel(level) {
-  return level > 0 && (level % SPECIAL_EVERY_X) === 0;
-}
-
 function poolForLevel(level, pools) {
   if (level < 25) return pools.easy;
   if (level < 50) return pools.medium;

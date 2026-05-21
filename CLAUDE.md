@@ -2,7 +2,7 @@
 
 ## Project
 
-EmojiFind — port of the Unity EmojiFind game. 117 emojis arranged 9×13, one is a slight lookalike of the rest; tap to find it. 3 stars, lose one per hint used. Every 20 levels = "Special" (random emojis, target shown in HUD).
+EmojiFind — port of the Unity EmojiFind game. 117 emojis arranged 9×13, one is a slight lookalike of the rest; tap to find it. 3 stars, lose one per hint used.
 
 Spec: `docs/superpowers/specs/2026-05-19-emojifind-port-design.md`
 Plan: `docs/superpowers/plans/2026-05-19-emojifind-port-implementation.md`

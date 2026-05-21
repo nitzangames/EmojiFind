@@ -1,4 +1,4 @@
-const VERSION = 'v0.1.17';
+const VERSION = 'v0.1.19';
 
 // Board
 const GRID_W = 9;
@@ -27,6 +27,3 @@ const COL_HINT = '#5badee';
 const COL_NEXT = '#2ecc71';
 const COL_STAR_ON = '#ffffff';
 const COL_STAR_OFF = '#1a2530';
-
-// Special-level cadence (mirrors Unity's specialEveryXLevels = 20)
-const SPECIAL_EVERY_X = 20;

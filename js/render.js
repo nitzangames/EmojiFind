@@ -15,7 +15,6 @@ function drawFrame(state) {
     drawLoading();
   } else {
     drawGrid(state.levelData);
-    if (state.levelData.isSpecial) drawSpecialTarget(state.levelData);
     if (state.mode === 'found') drawFoundOverlay(state.levelData);
   }
   drawVersion();
@@ -30,10 +29,7 @@ function drawHud(state) {
   ctx.font = '72px sans-serif';
   ctx.textBaseline = 'middle';
   ctx.fillStyle = '#ffffff';
-  const title = state.levelData && state.levelData.isSpecial
-    ? `Special ${Math.floor(state.levelData.level / SPECIAL_EVERY_X)}`
-    : `Level ${state.level}`;
-  ctx.fillText(title, CANVAS_W / 2, 80);
+  ctx.fillText(`Level ${state.level}`, CANVAS_W / 2, 80);
 
   // Star count — centered under the title
   ctx.font = '40px sans-serif';
@@ -76,18 +72,6 @@ function drawGrid(levelData) {
     ctx.drawImage(img, drawX, drawY, TILE_W * scale, TILE_H * scale);
     ctx.globalAlpha = 1;
   }
-}
-
-function drawSpecialTarget(levelData) {
-  const cx = CANVAS_W / 2;
-  const y = HUD_HEIGHT - 8;
-  ctx.fillStyle = '#ffffff';
-  ctx.font = '36px sans-serif';
-  ctx.textAlign = 'right';
-  ctx.textBaseline = 'middle';
-  ctx.fillText('Find this →', cx - 60, y);
-  const img = getImageNow(levelData.targetCodepoint);
-  if (img) ctx.drawImage(img, cx - 48, y - 48, 96, 96);
 }
 
 function drawFoundOverlay(levelData) {

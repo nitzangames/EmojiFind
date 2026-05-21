@@ -1,5 +1,5 @@
 // Image cache + loader. Decoded HTMLImageElement keyed by codepoint.
-// LRU eviction at 256 entries (enough for a Special level's 117 + history).
+// LRU eviction at 256 entries.
 
 const LRU_MAX = 256;
 const imgCache = new Map();   // codepoint -> HTMLImageElement

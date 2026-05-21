@@ -1,5 +1,7 @@
 # EmojiFind Port Implementation Plan
 
+> **Historical note (2026-05-21):** This plan describes the original port, which included a "Special level" every 20 levels (random emojis, target shown in HUD). That feature was later removed — `SPECIAL_EVERY_X`, `isSpecialLevel`, `drawSpecialTarget`, `state.allEmojis`, and `assets/all-emojis.json` no longer exist. Treat any references to them below as period documentation, not current behavior.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Faithful 1:1 port of the Unity EmojiFind game to vanilla-JS canvas, deployable to play.nitzan.games.
